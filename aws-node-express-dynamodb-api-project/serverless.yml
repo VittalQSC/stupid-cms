@@ -1,4 +1,4 @@
-service: aws-node-express-dynamodb-api-project
+service: aws-node-db-api-project
 frameworkVersion: '2'
 
 custom:
@@ -7,6 +7,7 @@ custom:
 provider:
   name: aws
   runtime: nodejs12.x
+  region: eu-central-1
   lambdaHashingVersion: '20201221'
   iam:
     role:
