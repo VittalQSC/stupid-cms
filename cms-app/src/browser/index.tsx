@@ -12,12 +12,21 @@ import React from 'react';
 import { hydrate } from "react-dom";
 import { BrowserRouter } from 'react-router-dom';
 
+import ConfigContext from "../components/ConfigContext";
+import { Config } from "../server/config";
 import { App } from '../App';
 
+const config = (window as any).__CONFIG__ as Config;
+delete (window as any).__CONFIG__;
+
+const basename = config.app.URL.match(/^(?:https?:\/\/)?[^\/]+(\/?.+)?$/i)?.[1];
+
 const render = () => {
-    hydrate(<BrowserRouter>
-        <App />
-    </BrowserRouter>, document.getElementById('root'));
+    hydrate(<ConfigContext.Provider value={config}>
+        <BrowserRouter basename={basename}>
+            <App />
+        </BrowserRouter>
+    </ConfigContext.Provider>, document.getElementById('root'));
 }
 
 render();

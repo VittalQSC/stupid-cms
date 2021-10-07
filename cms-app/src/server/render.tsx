@@ -22,7 +22,7 @@ export default async function render(_event: APIGatewayEvent): Promise<string> {
   console.log(_event);
   const content = renderToString(
     <ConfigContext.Provider value={config}>
-      <StaticRouter location={_event.path} context={{}}>
+      <StaticRouter basename={config.app.URL} location={_event.path} context={{}}>
         <App />
       </StaticRouter>
     </ConfigContext.Provider>,
