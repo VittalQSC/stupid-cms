@@ -1,0 +1,110 @@
+service: cms-api
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-central-1
+  environment:
+    DYNAMODB_NAMESPACE: ${opt:stage, "dev"}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/*"
+  apiGateway:
+    restApiId:
+      'Fn::ImportValue': ApiGateway-restApiId
+    restApiRootResourceId:
+      'Fn::ImportValue': ApiGateway-rootResourceId
+  lambdaHashingVersion: '20201221'
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dynamodb-local
+  - serverless-offline
+
+functions:
+
+  ## Users API
+  createUser:
+      handler: src/User.create
+      events:
+          - http:
+              method: POST
+              path: /api/users
+              cors: true
+  getUser:
+      handler: src/User.get
+      events:
+          - http:
+              method: GET
+              path: /api/user
+              cors: true
+  loginUser:
+      handler: src/User.login
+      events:
+          - http:
+              method: POST
+              path: /api/user
+              cors: true
+
+custom:
+  serverless-offline:
+    useChildProcesses: true
+    noPrependStageInUrl: true
+    httpPort: 3001
+    lambdaPort: 3003
+
+  dynamodb:
+  # If you only want to use DynamoDB Local in some stages, declare them here
+    stages:
+      - dev
+    start:
+      port: 8001
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+
+resources:
+  Resources:
+
+    UsersDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: username
+            AttributeType: S
+          -
+            AttributeName: email
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: username
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: cms-api-${self:provider.environment.DYNAMODB_NAMESPACE}-users
+        GlobalSecondaryIndexes:
+          -
+            IndexName: email
+            KeySchema:
+              -
+                AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1

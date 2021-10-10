@@ -1,0 +1,45 @@
+service: gw
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-central-1
+  lambdaHashingVersion: '20201221'
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+resources:
+  Resources:
+    ApiGW:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ApiGW
+
+    MyWebsocketApi:
+      Type: AWS::ApiGatewayV2::Api
+      Properties:
+        Name: MyWebsocketApi
+        ProtocolType: WEBSOCKET
+        RouteSelectionExpression: '$request.body.action'
+
+  Outputs:
+    apiGatewayRestApiId:
+      Value:
+        Ref: ApiGW
+      Export:
+        Name: ApiGateway-restApiId
+
+    apiGatewayRestApiRootResourceId:
+      Value:
+        Fn::GetAtt:
+          - ApiGW
+          - RootResourceId
+      Export:
+        Name: ApiGateway-rootResourceId
