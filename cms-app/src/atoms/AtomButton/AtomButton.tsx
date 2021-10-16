@@ -7,9 +7,9 @@ const BaseButton = styled.button`
 `;
 
 export const Button = styled(BaseButton)`
-  background: #5468F9;
-  border: 1px solid #5468F9;
-  color: #FFFFFF;
+  background: ${props => !props.disabled ? '#5468F9' : '#EBEDF5'};
+  border: ${props => !props.disabled ? '1px solid #5468F9' : '1px solid #EBEDF5'};
+  color: ${props => !props.disabled ? '#FFFFFF' : '#ACAFBF'};
 
   &:hover {
       background: #3F52DE;

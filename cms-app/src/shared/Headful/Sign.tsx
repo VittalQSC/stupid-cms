@@ -2,6 +2,7 @@ import React from "react";
 import { Button, OutlineButton } from "@atoms/AtomButton/AtomButton";
 
 import styled from "styled-components";
+import { AtomRoute } from "@atoms/AtomRoute/AtomRoute";
 
 const SignContainer = styled.div`
     & button:not(:last-child) {
@@ -12,6 +13,10 @@ const SignContainer = styled.div`
 export const Sign: React.FC = () => {
     return (<SignContainer>
         <Button>Sign in</Button>
-        <OutlineButton>Sign up</OutlineButton>
+        <OutlineButton>
+            <AtomRoute to="sign-up">
+                Sign up
+            </AtomRoute>
+        </OutlineButton>
     </SignContainer>);
 };

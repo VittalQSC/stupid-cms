@@ -3,5 +3,5 @@ import styled from "styled-components";
 
 export const AtomRoute = styled(NavLink)`
     text-decoration: none;
-    color: black;
+    color: inherit;
 `;
