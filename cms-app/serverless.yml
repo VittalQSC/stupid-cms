@@ -13,6 +13,10 @@ provider:
   logRetentionInDays: 7
   lambdaHashingVersion: 20201221
   apiGateway:
+    restApiId:
+      'Fn::ImportValue': ApiGateway-restApiId
+    restApiRootResourceId:
+      'Fn::ImportValue': ApiGateway-rootResourceId
     shouldStartNameWithService: true # for upcoming Serverless v3
 
   environment:
@@ -22,11 +26,21 @@ provider:
 
     APP_DIST_URL: ${self:custom.distBucketUrl.${self:provider.region}, self:custom.distBucketUrl.default}
     APP_PUBLIC_URL: ${self:custom.distBucketUrl.${self:provider.region}, self:custom.distBucketUrl.default}
+    API_URL:
+      Fn::Join:
+        - ""
+        - - https://
+          - 'Fn::ImportValue': ApiGateway-restApiId
+          - .execute-api.
+          - Ref: AWS::Region
+          - .amazonaws.com/
+          - ${self:provider.stage}
+          - /api
     APIGATEWAY_URL:
       Fn::Join:
         - ""
         - - https://
-          - Ref: ApiGatewayRestApi
+          - 'Fn::ImportValue': ApiGateway-restApiId
           - .execute-api.
           - Ref: AWS::Region
           - .amazonaws.com/
@@ -99,13 +113,6 @@ custom:
 
 resources:
   Resources:
-    # Customize the API Gateway resource
-    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        # Enable gzip compression
-        MinimumCompressionSize: 1000
-
     # S3 Bucket for the distribution bundles
     DistBucket:
       Type: AWS::S3::Bucket
@@ -121,17 +128,13 @@ resources:
                 - Fn::Join:
                     - ""
                     - - https://
-                      - Ref: ApiGatewayRestApi
+                      - 'Fn::ImportValue': ApiGateway-restApiId
                       - .execute-api.
                       - Ref: AWS::Region
                       - .amazonaws.com
               MaxAge: 3000
 
   Outputs:
-    ApiGatewayRestApi:
-      Description: API Gateway Endpoint
-      Value:
-        Ref: ApiGatewayRestApi
     DistBucket:
       Description: Distribution S3 Bucket
       Value:
