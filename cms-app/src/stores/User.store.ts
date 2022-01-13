@@ -3,9 +3,9 @@ import { makeAutoObservable } from "mobx";
 export class UserState {
     static injectName = 'userState'
 
-    username: string
-    email: string
-    token: string
+    username = ''
+    email = ''
+    token = ''
 
     constructor() {
         makeAutoObservable(this);
@@ -22,5 +22,11 @@ export class UserState {
             this.username = user.username;
             this.email = user.email;
         });
+    }
+
+    signOut() {
+        this.token = '';
+        this.username = '';
+        this.email = '';
     }
 }

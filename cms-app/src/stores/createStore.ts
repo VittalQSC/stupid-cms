@@ -9,8 +9,8 @@ export type TFriend = {
 export function createStore() {
     // note the use of this which refers to observable instance of the store
     return {
-        [UserState.injectName]: new UserState(),
-    }
+        [UserState.injectName]: new UserState()
+    };
 }
   
-  export type TStore = ReturnType<typeof createStore>
+export type TStore = ReturnType<typeof createStore>;

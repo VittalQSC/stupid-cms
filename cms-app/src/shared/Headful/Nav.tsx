@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { NavItem } from './Headful.d';
+import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
+
+import { NavItem } from './Headful.d';
 
 export const StyledNav = styled.nav`
     display: inline-flex;
@@ -35,7 +37,14 @@ export interface NavProps {
 }
 
 export const Nav: React.FC<NavProps> = ({ items, initialSelectedItem = null }) => {
+    const location = useLocation();
     const [selected, select] = useState<string | null>(initialSelectedItem);
+
+    useEffect(() => {
+        if (!items.find(item => item.path === location.pathname)) {
+            select(null);
+        }
+    }, [location]);
 
     return (<StyledNav>
         <ul>
