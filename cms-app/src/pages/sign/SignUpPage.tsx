@@ -1,27 +1,20 @@
 import React from "react";
+import { observer } from "mobx-react";
 import Joi from "joi";
 import { Formik } from 'formik';
+
+// atoms
 import { AtomInput, AtomInputError } from "@atoms/AtomInput/AtomInput";
 import { Button } from "@atoms/AtomButton/AtomButton";
-import styled from "styled-components";
-import { observer } from "mobx-react";
+
+// components
 import useConfig from "@components/useConfig";
+
+// hooks
 import { useStore } from "@hooks/useStore";
 
-const Form = styled.form`
-    display: flex;
-    padding: 20px 20%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-`;
-
-const InputContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    min-height: 70px;
-    width: 100%;
-`;
+import { Form, InputContainer } from "./Sign.Styles";
+import { joiToFormikErrorFormat } from "./Sign.Helpers";
 
 const schema = Joi.object({
   username: Joi.string()
@@ -34,23 +27,13 @@ const schema = Joi.object({
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
 
   password: Joi.string()
-    .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+    .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+    .messages({
+      'string.pattern.base': 'should contain at least 3 chars or nums'
+    }),
 
   repeatPassword: Joi.ref('password'),
 });
-
-function joiToFormikErrorFormat(details: Joi.ValidationErrorItem[] | undefined = []): {[name: string]: string} {
-    return details.reduce((errors: { [path: string]: string }, currError) => {
-        currError.path.forEach((path) => {
-          if (!errors[path]) {
-            errors[path] = '';
-          }
-          errors[path] += `;${currError.message}`;
-        });
-        
-        return errors;
-    }, {});
-}
 
 export const SignUpPage = observer(() => {
     const config = useConfig();

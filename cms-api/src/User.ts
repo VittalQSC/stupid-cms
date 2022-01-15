@@ -85,6 +85,10 @@ export async function login(event) {
 
     if (!userWithThisEmail) { return envelop('User not found in DB.', 422); }
 
+    if (!userWithThisEmail.Items || !userWithThisEmail.Items[0]) {
+      return envelop('User not found in DB.', 422);
+    }
+
     // Attempt to match password
     if (!bcrypt.compareSync(user.password,
         userWithThisEmail.Items[0].password)) {

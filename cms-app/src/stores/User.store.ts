@@ -11,6 +11,19 @@ export class UserState {
         makeAutoObservable(this);
     }
 
+    login(apiUrl: string, email: string, password: string) {
+        return fetch(apiUrl + '/user', {
+            method: 'POST',
+            body: JSON.stringify({
+                user: { email, password, }
+            })
+        }).then((res) => res.json()).then(({ user }) => {
+            this.token = user.token;
+            this.username = user.username;
+            this.email = user.email;
+        });
+    }
+
     register(apiUrl: string, username: string, email: string, password: string) {
         return fetch(apiUrl + '/users', {
             method: 'POST',

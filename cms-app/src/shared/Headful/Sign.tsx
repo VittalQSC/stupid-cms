@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
+// atoms
 import { Button, OutlineButton } from "@atoms/AtomButton/AtomButton";
 import { AtomRoute } from "@atoms/AtomRoute/AtomRoute";
 
@@ -12,7 +13,11 @@ const SignContainer = styled.div`
 
 export const Sign: React.FC = () => {
     return (<SignContainer>
-        <Button>Sign in</Button>
+        <Button>
+            <AtomRoute to="sign-in">
+                Sign in
+            </AtomRoute>
+        </Button>
         <OutlineButton>
             <AtomRoute to="sign-up">
                 Sign up
