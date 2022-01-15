@@ -1,6 +1,5 @@
 import React from 'react';
-import { Route, Switch, NavLink } from 'react-router-dom';
-import { Provider as MobxProvider, inject } from "mobx-react";
+import { Route, Switch } from 'react-router-dom';
 
 // components
 import { SignUpPage } from '@pages/sign/SignUpPage';
