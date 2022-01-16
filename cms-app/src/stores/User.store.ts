@@ -1,11 +1,26 @@
 import { makeAutoObservable } from "mobx";
+import Cookies from 'js-cookie';
 
 export class UserState {
     static injectName = 'userState'
 
     username = ''
     email = ''
-    token = ''
+    _token = ''
+
+    get token(): string {
+        return this._token;
+    }
+
+    set token(token: string) {
+        if (!token) {
+            Cookies.remove('token');
+        } else {
+            Cookies.set('token', token, { expires: 365 });
+        }
+
+        this._token = token;
+    }
 
     constructor() {
         makeAutoObservable(this);
@@ -35,6 +50,23 @@ export class UserState {
             this.username = user.username;
             this.email = user.email;
         });
+    }
+
+    getUser(apiUrl: string, token: string | undefined) {
+        return fetch(apiUrl + '/user', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((res) => res.json()).then((result) => {
+            if (result.errors) {
+                return;
+            }
+            const { user } = result;
+
+            this.token = user.token;
+            this.username = user.username;
+            this.email = user.email;
+        }).catch(() => {});
     }
 
     signOut() {
