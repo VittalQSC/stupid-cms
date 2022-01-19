@@ -6,6 +6,7 @@ import styled from 'styled-components';
 // atoms
 import { AtomBlock } from '@atoms/AtomBlock/AtomBlock';
 import { TemplateBuilder } from '@components/TemplateBuilder/TemplateBuilder';
+import { WidgetBuilder } from '@components/WidgetBuilder/WidgetBuilder';
 
 const FlexWrapper = styled.div`
     display: flex;
@@ -25,7 +26,9 @@ export const HomePage = observer(() => {
             Welcome {userStore.username}! On this page you can create your templates.
         </AtomBlock>
         <FlexWrapper>
-            <AtomBlock flex='1'>SideBar</AtomBlock>
+            <AtomBlock flex='1'>
+                <WidgetBuilder></WidgetBuilder>
+            </AtomBlock>
             <AtomBlock flex='2'>
                 <TemplateBuilder></TemplateBuilder>
             </AtomBlock>

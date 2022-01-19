@@ -19,13 +19,13 @@ class BlockWidget extends Widget {
         this.widgets = widgets;
     }
     addWidget(widget) {
-        this.widgets = [...this.widgets, widget];
+        this.widgets = [...this.widgets, widget.id];
     }
     deleteWidget(id) {
-        this.widgets = this.widgets.filter(w => w.id !== id);
+        this.widgets = this.widgets.filter(wId => wId !== id);
     }
     toJSON() {
-        return Object.assign(Object.assign({}, super.toJSON()), { widgets: this.widgets.map(w => w.toJSON()) });
+        return Object.assign(Object.assign({}, super.toJSON()), { widgets: this.widgets });
     }
 }
 exports.BlockWidget = BlockWidget;

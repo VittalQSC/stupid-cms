@@ -1,11 +1,11 @@
 export interface IWidget {
-    id?: string;
+    id: string;
     type: string;
     toJSON(): object;
 }
 export interface Block {
-    id?: string;
-    widgets: IWidget[];
+    id: string;
+    widgets: string[];
 }
 export declare class Widget implements IWidget {
     id: string;
@@ -19,12 +19,12 @@ export declare class Widget implements IWidget {
 export declare class BlockWidget extends Widget {
     id: string;
     type: string;
-    widgets: IWidget[];
+    widgets: string[];
     constructor(id: any, widgets?: any[]);
     addWidget(widget: IWidget): void;
     deleteWidget(id: string): void;
     toJSON(): {
-        widgets: object[];
+        widgets: string[];
         id: string;
         type: string;
     };

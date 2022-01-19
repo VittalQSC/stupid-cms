@@ -1,5 +1,6 @@
 import { useStore } from '@hooks/useStore';
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { observer } from 'mobx-react';
 import { OutlineButton } from '@atoms/AtomButton/AtomButton';
 import styled from 'styled-components';
@@ -10,6 +11,10 @@ const AddBlockButton = styled(OutlineButton)`
     width: 100%;
     border-style: dashed;
     border-width: 4px;
+
+    &:hover {
+        border-width: 4px;
+    }
 `;
 
 const BlocksList = styled.ul`
@@ -28,9 +33,23 @@ const BlockContainer = styled.li`
 
 const AddWidgetButton = styled(OutlineButton)`
     display: inline-block;
-    width: 100px
+    width: 100px;
     padding: 40px 20px;
     border-width: 2px;
+`;
+
+type WidgetProps = {
+    edit: boolean
+};
+
+const WidgetPlaceholder = styled(OutlineButton)`
+    color: darkgrey;
+    display: inline-block;
+    width: 100px;
+    padding: 40px 20px;
+    border-width: 2px;
+
+    border-color: ${(props: WidgetProps) => props.edit ? 'red' : 'darkgrey'}
 `;
 
 const RemoveBlock = styled.span`
@@ -63,16 +82,26 @@ type BlockProps = {
     block: widgets.Block
 };
 
-const Block = ({ block }: BlockProps) => {
+const BlockList = styled.div`
+    display: flex;
+    gap: 5px;
+`;
+
+const Block = observer(({ block }: BlockProps) => {
     const { templateStore } = useStore();
 
     return (<BlockContainer>
-        <div>
-            <AddWidgetButton>+</AddWidgetButton>
-        </div>
+        <BlockList>
+            {templateStore.getWidgetIds(block.id).map(id => (
+                <WidgetPlaceholder key={id} edit={templateStore.edit === id} onClick={() => templateStore.setEditWidget(id)}>
+                    +
+                </WidgetPlaceholder>
+            ))}
+            <AddWidgetButton onClick={() => (templateStore.addWidgetToBlock(block.id, uuidv4()))}>+</AddWidgetButton>
+        </BlockList>
         <RemoveBlock onClick={() => templateStore.deleteBlock(block.id)}>X</RemoveBlock>
     </BlockContainer>);
-};
+});
 
 export const TemplateBuilder = observer(() => {
     const { templateStore } = useStore();

@@ -1,14 +1,14 @@
 import { BLOCK_WIDGET_TYPE, CARD_WIDGET_TYPE, HEADER_WIDGET_TYPE, IMAGE_WIDGET_TYPE } from "./widget.types";
 
 export interface IWidget {
-    id?: string;
+    id: string;
     type: string;
     toJSON(): object;
 }
 
 export interface Block {
-    id?: string;
-    widgets: IWidget[];
+    id: string;
+    widgets: string[];
 }
 
 export class Widget implements IWidget {
@@ -27,7 +27,7 @@ export class Widget implements IWidget {
 export class BlockWidget extends Widget {
     id: string;
     type = BLOCK_WIDGET_TYPE
-    widgets: IWidget[] = []
+    widgets: string[] = []
 
     constructor(id, widgets = []) {
         super(id);
@@ -35,17 +35,17 @@ export class BlockWidget extends Widget {
     }
 
     addWidget(widget: IWidget) {
-        this.widgets = [...this.widgets, widget];
+        this.widgets = [...this.widgets, widget.id];
     }
 
     deleteWidget(id: string) {
-        this.widgets = this.widgets.filter(w => w.id !== id);
+        this.widgets = this.widgets.filter(wId => wId !== id);
     }
 
     toJSON() {
         return {
             ...super.toJSON(),
-            widgets: this.widgets.map(w => w.toJSON())
+            widgets: this.widgets
         };
     }
 }
