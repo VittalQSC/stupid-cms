@@ -15,6 +15,8 @@ import { useStore } from "@hooks/useStore";
 
 import { Form, InputContainer } from "./Sign.Styles";
 import { joiToFormikErrorFormat } from "./Sign.Helpers";
+import { withRouter } from "react-router-dom";
+import { History } from 'history';
 
 const schema = Joi.object({
     email: Joi.string()
@@ -27,9 +29,13 @@ const schema = Joi.object({
         }),
 });
 
-export const SignInPage = observer(() => {
+type Props = {
+  history: History
+};
+
+export const SignInPage = observer(withRouter(({ history }: Props) => {
     const config = useConfig();
-    const { userState } = useStore();
+    const { userStore } = useStore();
 
     return (<Formik
         initialValues={{ email: '', password: '' }}
@@ -37,11 +43,13 @@ export const SignInPage = observer(() => {
             const result = schema.validate(values, { abortEarly: false });
             return joiToFormikErrorFormat(result?.error?.details);
         }}
-        onSubmit={(user, { setSubmitting }) => {
+        onSubmit={async (user, { setSubmitting }) => {
             setSubmitting(true);
-            userState.login(config.app.API_URL, user.email, user.password)
-              .catch(() => {})
-              .finally(() => setSubmitting(false));
+            try {
+              await userStore.login(config.app.API_URL, user.email, user.password);
+              history.push('/');
+            } catch (e) {}
+            setSubmitting(false);
         }}
     >{
         ({
@@ -83,4 +91,4 @@ export const SignInPage = observer(() => {
               </Button>
         </Form>)
     }</Formik>);
-});
+}));

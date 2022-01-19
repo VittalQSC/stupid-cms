@@ -1,0 +1,16 @@
+{
+  "name": "cmstmplt-vitali-shatsou",
+  "version": "1.1.5",
+  "description": "Can log \"hello world\" and \"goodbye world\" to the console!",
+  "main": "dist/index.js",
+  "scripts": {
+    "publish": "npm publish"
+  },
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "dependencies": {
+    "typescript": "^4.5.4"
+  }
+}

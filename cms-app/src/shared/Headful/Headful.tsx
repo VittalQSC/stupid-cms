@@ -23,26 +23,26 @@ const SignOutContainer = styled.div`
 `;
 
 const SignOut = observer(() => {
-    const { userState } = useStore();
+    const { userStore } = useStore();
 
     return (<SignOutContainer className='sign-out-container'>
-        <span>Hi, {userState.username}</span>
-        <OutlineButton onClick={() => (userState.signOut())}>Sign Out</OutlineButton>
+        <span>Hi, {userStore.username}</span>
+        <OutlineButton onClick={() => (userStore.signOut())}>Sign Out</OutlineButton>
     </SignOutContainer>);
 });
 
 const Content = styled.section`
     padding: 10px 20px;
-    height: calc(100% - 50px);
+    min-height: calc(100% - 50px);
+    background: lightgrey;
 `;
 
 export const Headful: React.FC = observer(({ children }) => {
-    const { userState } = useStore();
-    
+    const { userStore } = useStore();
     return (<>
         <Header>
-            <Nav items={items} initialSelectedItem={items[0]?.id || null}></Nav>
-            {userState.username ? (<SignOut/>) : (<Sign/>)}
+            <Nav items={items}></Nav>
+            {userStore.username ? (<SignOut/>) : (<Sign/>)}
         </Header>
         <Content>{children}</Content>
         <Footer></Footer>

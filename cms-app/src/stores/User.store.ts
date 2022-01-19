@@ -1,8 +1,8 @@
 import { makeAutoObservable } from "mobx";
 import Cookies from 'js-cookie';
 
-export class UserState {
-    static injectName = 'userState'
+export class UserStore {
+    static injectName = 'userStore'
 
     username = ''
     email = ''
@@ -10,6 +10,10 @@ export class UserState {
 
     get token(): string {
         return this._token;
+    }
+
+    get isLoggedIn(): boolean {
+        return !!this._token;
     }
 
     set token(token: string) {

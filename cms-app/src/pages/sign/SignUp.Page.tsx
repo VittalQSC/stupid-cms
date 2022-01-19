@@ -15,6 +15,7 @@ import { useStore } from "@hooks/useStore";
 
 import { Form, InputContainer } from "./Sign.Styles";
 import { joiToFormikErrorFormat } from "./Sign.Helpers";
+import { withRouter } from "react-router-dom";
 
 const schema = Joi.object({
   username: Joi.string()
@@ -35,9 +36,9 @@ const schema = Joi.object({
   repeatPassword: Joi.ref('password'),
 });
 
-export const SignUpPage = observer(() => {
+export const SignUpPage = observer(withRouter(({ history }) => {
     const config = useConfig();
-    const { userState } = useStore();
+    const { userStore } = useStore();
 
     return (
       <Formik
@@ -46,11 +47,13 @@ export const SignUpPage = observer(() => {
           const result = schema.validate(values, { abortEarly: false });
           return joiToFormikErrorFormat(result?.error?.details);
         }}
-        onSubmit={(user, { setSubmitting }) => {
+        onSubmit={async (user, { setSubmitting }) => {
             setSubmitting(true);
-            userState.register(config.app.API_URL, user.username, user.email, user.password)
-              .catch(() => {})
-              .finally(() => setSubmitting(false));
+            try {
+              await userStore.register(config.app.API_URL, user.username, user.email, user.password);
+              history.push('/');
+            } catch (e) {}
+            setSubmitting(false)
         }}
       >
         {({
@@ -122,4 +125,4 @@ export const SignUpPage = observer(() => {
             </Form>
         )}
       </Formik>);
-});
+}));

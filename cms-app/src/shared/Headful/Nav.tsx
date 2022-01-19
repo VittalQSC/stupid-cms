@@ -33,17 +33,14 @@ export const StyledNav = styled.nav`
 
 export interface NavProps {
     items: NavItem[],
-    initialSelectedItem: string | null // id
 }
 
-export const Nav: React.FC<NavProps> = ({ items, initialSelectedItem = null }) => {
+export const Nav: React.FC<NavProps> = ({ items }) => {
     const location = useLocation();
-    const [selected, select] = useState<string | null>(initialSelectedItem);
+    const [selected, select] = useState<string | null>(items.find(item => item.path === location.pathname)?.id || null);
 
     useEffect(() => {
-        if (!items.find(item => item.path === location.pathname)) {
-            select(null);
-        }
+        select(items.find(item => item.path === location.pathname)?.id || null);
     }, [location]);
 
     return (<StyledNav>

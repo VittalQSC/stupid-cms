@@ -1,4 +1,5 @@
-import { UserState } from "./User.store"
+import { TemplateStore } from "./Template.store";
+import { UserStore } from "./User.store"
 
 export type TFriend = {
     name: string
@@ -9,7 +10,8 @@ export type TFriend = {
 export function createStore() {
     // note the use of this which refers to observable instance of the store
     return {
-        [UserState.injectName]: new UserState()
+        userStore: new UserStore(),
+        templateStore: new TemplateStore(),
     };
 }
   
