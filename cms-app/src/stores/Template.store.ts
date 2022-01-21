@@ -1,7 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { v4 as uuidv4 } from 'uuid';
 import { widgets } from 'cmstmplt-vitali-shatsou';
-import { IWidget } from "cmstmplt-vitali-shatsou/dist/widgets";
 
 type Template = {
     blocks: widgets.Block[];
@@ -18,12 +17,20 @@ export class TemplateStore {
 
     _edit: string | null = null
 
+    get editWidget(): widgets.IWidget | null {
+        return this._edit ? this.widgets[this._edit] : null;
+    }
+
     get edit(): string | null {
         return this._edit;
     }
 
     get blocks() {
         return this._template.blocks;
+    }
+
+    get widgets() {
+        return this._template.widgets;
     }
 
     constructor() {
@@ -65,7 +72,23 @@ export class TemplateStore {
         block.widgets = [...block.widgets, widgetId];
     }
 
-    registerWidget(widget: IWidget) {}
+    registerWidget(widget: widgets.IWidget) {
+        this._template.widgets = {
+            ...this._template.widgets,
+            [widget.id]: widget
+        };
+    }
+
+    unregisterWidget(widgetId: string | null) {
+        const widgets = {...this._template.widgets};
+        if (widgetId) {
+            delete widgets[widgetId];
+        }
+        this._template = {
+            ...this._template,
+            widgets
+        };
+    }
 
     setEditWidget(id: string | null) {
         this._edit = this._edit === id ? null : id;

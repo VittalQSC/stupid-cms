@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
-import { useStore } from '@hooks/useStore';
 import styled from 'styled-components';
-import { AtomDropdown } from '@atoms/AtomDropdown/AtomDropdown';
 import { widgetTypes } from 'cmstmplt-vitali-shatsou';
+
+// atoms
+import { AtomDropdown } from '@atoms/AtomDropdown/AtomDropdown';
+
+// hooks
+import { useStore } from '@hooks/useStore';
+
+import { HeaderWidgetForm } from './HeaderWidget.Form';
 
 const NoActiveWidgetContainer = styled.section`
     height: 100%;
@@ -16,6 +22,11 @@ const NoActiveWidgetContainer = styled.section`
 
 export const WidgetBuilder = observer(() => {
     const { templateStore } = useStore();
+    const [widgetTypeValue, setWidgetTypeValue] = useState('');
+    useEffect(() => {
+        const widget = templateStore.editWidget;
+        setWidgetTypeValue(widget ? widget.type : '');
+    }, [templateStore.edit]);
 
     if (!templateStore.edit) {
         return (<NoActiveWidgetContainer>No active widget to edit</NoActiveWidgetContainer>);
@@ -25,6 +36,9 @@ export const WidgetBuilder = observer(() => {
         <h4>
             Here you can edit selected widget
         </h4>
-        <AtomDropdown options={Object.values(widgetTypes)} onChange={(option) => {console.log('selected', option);}}></AtomDropdown>
+        <AtomDropdown options={Object.values(widgetTypes)} value={widgetTypeValue} onChange={(option) => {setWidgetTypeValue(option);}}></AtomDropdown>
+        {
+            (widgetTypeValue === widgetTypes.HEADER_WIDGET_TYPE) && (<HeaderWidgetForm />)
+        }
     </section>);
 });

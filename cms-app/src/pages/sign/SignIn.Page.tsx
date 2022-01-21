@@ -1,7 +1,9 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
 import Joi from "joi";
 import { Formik } from 'formik';
+import { History } from 'history';
 
 // atoms
 import { AtomInput, AtomInputError } from "@atoms/AtomInput/AtomInput";
@@ -13,10 +15,11 @@ import useConfig from "@components/useConfig";
 // hooks
 import { useStore } from "@hooks/useStore";
 
+
+// utils
+import { joiToFormikErrorFormat } from "@utils/joiToFormikErrorFormat";
+
 import { Form, InputContainer } from "./Sign.Styles";
-import { joiToFormikErrorFormat } from "./Sign.Helpers";
-import { withRouter } from "react-router-dom";
-import { History } from 'history';
 
 const schema = Joi.object({
     email: Joi.string()

@@ -11,4 +11,4 @@ export function joiToFormikErrorFormat(details: Joi.ValidationErrorItem[] | unde
         
         return errors;
     }, {});
-}
+};

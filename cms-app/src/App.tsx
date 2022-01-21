@@ -39,8 +39,6 @@ const RootNode = observer(() => {
   const config = useConfig();
   const { userStore } = useStore();
 
-  console.log('ALL', widgetTypes);
-
   useEffect(() => {
     const token = Cookies.get('token');
     setIsLoadingUser(!!(token && token !== userStore.token));

@@ -87,15 +87,22 @@ const BlockList = styled.div`
     gap: 5px;
 `;
 
+const Widget = styled(WidgetPlaceholder)`
+    color: green;
+    border-color: ${(props: WidgetProps) => props.edit ? 'orange' : 'green'}
+`;
+
 const Block = observer(({ block }: BlockProps) => {
     const { templateStore } = useStore();
 
     return (<BlockContainer>
         <BlockList>
             {templateStore.getWidgetIds(block.id).map(id => (
-                <WidgetPlaceholder key={id} edit={templateStore.edit === id} onClick={() => templateStore.setEditWidget(id)}>
-                    +
-                </WidgetPlaceholder>
+                !templateStore.widgets[id] 
+                    ? (<WidgetPlaceholder key={id} edit={templateStore.edit === id} onClick={() => templateStore.setEditWidget(id)}>
+                        +
+                    </WidgetPlaceholder>)
+                    : (<Widget key={id} edit={templateStore.edit === id} onClick={() => templateStore.setEditWidget(id)}></Widget>)
             ))}
             <AddWidgetButton onClick={() => (templateStore.addWidgetToBlock(block.id, uuidv4()))}>+</AddWidgetButton>
         </BlockList>

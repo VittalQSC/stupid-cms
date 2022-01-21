@@ -11,6 +11,7 @@ const DropdownHeader = styled(AtomInput)`
 const DropdownContainer = styled.div`
     position: relative;
     display: inline-block;
+    margin-bottom: 30px;
 
     & .arrow {
         position: absolute;
@@ -45,23 +46,22 @@ const DropdownOption = styled.div`
 
 type AtomDropdownProps = {
     options: string[];
-    onChange?: (value: string) => any
+    value: string;
+    onChange?: (value: string) => any;
 }
 
-export const AtomDropdown = ({ options, onChange }: AtomDropdownProps) => {
+export const AtomDropdown = ({ options, value, onChange }: AtomDropdownProps) => {
     const ref = createRef<HTMLDivElement>();
     const [openned, setOpenned] = useState(false);
-    const [selected, setSelected] = useState('')
     useOutsideClick(() => { openned && setOpenned(false); }, ref);
 
     function onDropdownOptionClick(option: string) {
-        setSelected(option);
-        setOpenned(false);
         onChange && onChange(option);
+        setOpenned(false);
     }
 
     return (<DropdownContainer ref={ref}>
-        <DropdownHeader onClick={() => setOpenned(!openned)} value={selected} readOnly={true}></DropdownHeader>
+        <DropdownHeader onClick={() => setOpenned(!openned)} value={value} readOnly={true}></DropdownHeader>
         <span className="arrow" onClick={() => setOpenned(!openned)}>
             {openned ? <AiFillCaretUp /> : <AiFillCaretDown />}
         </span>
