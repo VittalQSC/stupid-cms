@@ -1,5 +1,5 @@
 service: cms-api
-frameworkVersion: '2'
+frameworkVersion: '3'
 
 provider:
   name: aws
@@ -17,18 +17,26 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/*"
+    - Effect: "Allow"
+      Action:
+          - "s3:PutObject"
+          - "s3:GetObject"
+      Resource:
+          - "arn:aws:s3:::${self:custom.bucket}/*"
   apiGateway:
     restApiId:
       'Fn::ImportValue': ApiGateway-restApiId
     restApiRootResourceId:
       'Fn::ImportValue': ApiGateway-rootResourceId
+    binaryMediaTypes:
+      - '*/*'
   lambdaHashingVersion: '20201221'
 
 plugins:
   - serverless-plugin-typescript
   - serverless-dynamodb-local
   - serverless-offline
-
+  - serverless-s3-local
 functions:
 
   ## Users API
@@ -54,12 +62,25 @@ functions:
               path: /api/user
               cors: true
 
+  ## Uploader api
+  uploadImage:
+    handler: src/Uploader.uploadImage
+    events:
+      - http:
+          method: POST
+          path: /api/upload
+          cors: true
+    environment:
+      Bucket: ${self:custom.bucket} 
+
 custom:
   serverless-offline:
     useChildProcesses: true
     noPrependStageInUrl: true
     httpPort: 3001
     lambdaPort: 3003
+
+  bucket: cms-api-images-bucket
 
   dynamodb:
   # If you only want to use DynamoDB Local in some stages, declare them here
@@ -74,8 +95,18 @@ custom:
       seed: true
       convertEmptyValues: true
 
+  s3:
+    host: localhost
+    directory: cms-api-images
+    port: 4001
+
 resources:
   Resources:
+
+    CmsS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucket}
 
     UsersDynamoDBTable:
       Type: 'AWS::DynamoDB::Table'

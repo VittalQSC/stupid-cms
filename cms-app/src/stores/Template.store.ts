@@ -55,6 +55,11 @@ export class TemplateStore {
             if ((block.id === id) && block.widgets.find(w => w === this._edit)) {
                 this.setEditWidget(null);
             }
+
+            if (block.id === id) {
+                this.unregisterWidget(...block.widgets);
+            }
+
             return (block.id !== id);
         });
     }
@@ -79,15 +84,15 @@ export class TemplateStore {
         };
     }
 
-    unregisterWidget(widgetId: string | null) {
+    unregisterWidget(...widgetIds: (string | null)[]) {
         const widgets = {...this._template.widgets};
-        if (widgetId) {
-            delete widgets[widgetId];
-        }
-        this._template = {
-            ...this._template,
-            widgets
-        };
+        widgetIds.forEach((wId) => {
+            if (wId) {
+                delete widgets[wId];
+            }
+        });
+
+        this._template.widgets = widgets;
     }
 
     setEditWidget(id: string | null) {
